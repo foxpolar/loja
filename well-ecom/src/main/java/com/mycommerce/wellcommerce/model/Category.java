@@ -1,27 +1,21 @@
 package com.mycommerce.wellcommerce.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import java.util.UUID;
+
+
+@Entity(name = "categories")
+@NoArgsConstructor
+@Data
 public class Category {
-    private Long categoryId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID categoryId;
+    @Column(unique = true)
+    @NotEmpty(message = "{categories.categoryName.required}")
     private String categoryName;
-
-    public Category(Long categoryId, String categoryName) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
 }

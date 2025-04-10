@@ -2,6 +2,7 @@ package com.mycommerce.wellcommerce.controller;
 
 import com.mycommerce.wellcommerce.model.Category;
 import com.mycommerce.wellcommerce.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -9,13 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
+import java.util.UUID;
 
 import static com.mycommerce.wellcommerce.constants.Constants.*;
 
 @RestController
-@RequestMapping(PATH + VERSION)
+@RequestMapping(API_URL + API_VERSION)
 @AllArgsConstructor
 public class CategoryController {
 
@@ -32,7 +33,7 @@ public class CategoryController {
     }
 
     @PostMapping(PATH_CATEGORIES_PUBLIC)
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
         logger.info("Starting creating a category");
         categoryService.createCategory(category);
         logger.info("Category added Successfully");
@@ -40,7 +41,7 @@ public class CategoryController {
     }
 
     @DeleteMapping(PATH_CATEGORIES_PUBLIC + "/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<String> deleteCategory(@PathVariable UUID categoryId) {
         try {
             logger.info("Starting deleting a category");
             String status = categoryService.deleteCategory(categoryId);
@@ -53,7 +54,7 @@ public class CategoryController {
     }
 
     @GetMapping(PATH_CATEGORIES_PUBLIC + "/{categoryId}")
-    public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<Category> getCategory(@PathVariable UUID categoryId) {
         Category category = null;
         try {
             logger.info("Starting searching for one category");
@@ -62,16 +63,16 @@ public class CategoryController {
             return new ResponseEntity<>(category, HttpStatus.OK);
         } catch (ResponseStatusException e) {
             logger.info("Error searching a category id: {}", categoryId);
-            return new ResponseEntity<>(category, category == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+            return new ResponseEntity<>(category, HttpStatus.NOT_FOUND );
         }
     }
 
     @PutMapping(PATH_CATEGORIES_PUBLIC + "/{categoryId}")
     public ResponseEntity<String> upDateCategory(@RequestBody Category category,
-                                                 @PathVariable Long categoryId) {
+                                                 @PathVariable UUID categoryId) {
         try {
             logger.info("Starting update a category");
-            Category savedcategory = categoryService.updateCategory(category, categoryId);
+            categoryService.updateCategory(category, categoryId);
             logger.info("Category updated Successfully");
             return new ResponseEntity<>("Category with category id:  " + categoryId, HttpStatus.OK);
         } catch (ResponseStatusException e) {
